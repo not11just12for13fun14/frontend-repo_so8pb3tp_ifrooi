@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Film, Search, Filter, Plus, Trash2, Star, Loader2, Link2, User, Users, Database } from 'lucide-react'
+import { Film, Search, Filter, Plus, Trash2, Star, Link2, User, Users, Database } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 function Badge({ children, color = 'indigo' }) {
   const colors = {
@@ -26,6 +27,84 @@ function SkeletonCard() {
         <div className="h-3 w-full bg-slate-100 rounded" />
         <div className="h-3 w-11/12 bg-slate-100 rounded" />
       </div>
+    </div>
+  )
+}
+
+function CinemaIllustration() {
+  return (
+    <div className="relative h-60 sm:h-64 md:h-72">
+      {/* floating stars */}
+      {Array.from({ length: 8 }).map((_, i) => (
+        <motion.span
+          key={i}
+          className="absolute size-1.5 rounded-full bg-white/80"
+          style={{ left: `${10 + i * 10}%`, top: `${30 + (i % 3) * 10}%` }}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: [0, 1, 0], y: [-6, 0, -6] }}
+          transition={{ duration: 3 + (i % 4), repeat: Infinity, ease: 'easeInOut', delay: i * 0.2 }}
+        />
+      ))}
+
+      {/* cinema screen */}
+      <motion.div
+        className="absolute inset-x-0 top-2 mx-auto w-11/12 sm:w-4/5 h-28 sm:h-32 rounded-xl"
+        initial={{ boxShadow: '0 0 0px rgba(255,255,255,0)' }}
+        animate={{ boxShadow: ['0 0 0px rgba(255,255,255,0)', '0 0 36px rgba(255,255,255,0.25)', '0 0 0px rgba(255,255,255,0)'] }}
+        transition={{ duration: 3, repeat: Infinity }}
+        style={{ background: 'radial-gradient(circle at 30% 40%, rgba(255,255,255,0.85), rgba(255,255,255,0.1) 60%)' }}
+      >
+        <div className="h-full w-full rounded-xl ring-1 ring-white/40 backdrop-blur-[1px]" />
+      </motion.div>
+
+      {/* audience seats */}
+      <div className="absolute left-1/2 -translate-x-1/2 bottom-6 w-10/12">
+        <div className="grid grid-cols-7 gap-2 justify-items-center">
+          {Array.from({ length: 7 }).map((_, i) => (
+            <div key={i} className="h-3 w-10 bg-white/20 rounded-full" />
+          ))}
+        </div>
+      </div>
+
+      {/* person watching */}
+      <motion.div
+        className="absolute left-1/2 -translate-x-1/2 bottom-10 flex flex-col items-center"
+        animate={{ y: [0, -2, 0] }}
+        transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
+      >
+        <div className="size-9 rounded-full bg-white/90 shadow-sm" />
+        <div className="h-10 w-12 -mt-1 rounded-b-xl rounded-t-md bg-white/80" />
+        <div className="flex gap-1 mt-1">
+          <div className="h-2 w-6 rounded-full bg-white/50" />
+          <div className="h-2 w-6 rounded-full bg-white/50" />
+        </div>
+      </motion.div>
+
+      {/* popcorn bucket */}
+      <motion.div
+        className="absolute right-[18%] bottom-8"
+        initial={{ rotate: -6 }}
+        animate={{ y: [0, -6, 0], rotate: [-6, -2, -6] }}
+        transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
+      >
+        <div className="relative h-10 w-8">
+          <div className="absolute bottom-0 h-8 w-8 bg-white/90 rounded-b-md" />
+          <div className="absolute bottom-0 h-8 w-8 grid grid-cols-3">
+            <div className="bg-rose-400/80" />
+            <div className="bg-white/0" />
+            <div className="bg-rose-400/80" />
+          </div>
+          {Array.from({ length: 5 }).map((_, i) => (
+            <motion.span
+              key={i}
+              className="absolute top-0 size-1.5 rounded-full bg-white"
+              style={{ left: `${10 + i * 15}%` }}
+              animate={{ y: [-2, -6, -2] }}
+              transition={{ duration: 1.8 + i * 0.2, repeat: Infinity, ease: 'easeInOut' }}
+            />
+          ))}
+        </div>
+      </motion.div>
     </div>
   )
 }
@@ -123,13 +202,18 @@ function App() {
         <div className="mb-8">
           <div className="rounded-2xl bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 text-white p-6 sm:p-8 shadow-lg relative overflow-hidden">
             <div className="absolute inset-0 opacity-20 bg-[radial-gradient(500px_circle_at_0%_0%,white,transparent_60%),radial-gradient(400px_circle_at_100%_100%,white,transparent_60%)]" />
-            <div className="relative">
-              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">Kelola koleksi film Anda dengan elegan</h2>
-              <p className="mt-2 text-white/90 max-w-2xl">Tambah, cari, filter, dan kurasi daftar film favorit. Semua tersimpan rapi dengan dukungan database.</p>
-              <div className="mt-4 flex flex-wrap items-center gap-2">
-                <Badge color="yellow"><Star size={14} /> Cepat & responsif</Badge>
-                <Badge color="slate"><Users size={14} /> Multi-kolaborasi</Badge>
-                <Badge color="green"><Link2 size={14} /> Terintegrasi API</Badge>
+            <div className="relative grid md:grid-cols-2 gap-6 items-center">
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">Kelola koleksi film Anda dengan elegan</h2>
+                <p className="mt-2 text-white/90 max-w-2xl">Tambah, cari, filter, dan kurasi daftar film favorit. Semua tersimpan rapi dengan dukungan database.</p>
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  <Badge color="yellow"><Star size={14} /> Cepat & responsif</Badge>
+                  <Badge color="slate"><Users size={14} /> Multi-kolaborasi</Badge>
+                  <Badge color="green"><Link2 size={14} /> Terintegrasi API</Badge>
+                </div>
+              </div>
+              <div className="pointer-events-none">
+                <CinemaIllustration />
               </div>
             </div>
           </div>
